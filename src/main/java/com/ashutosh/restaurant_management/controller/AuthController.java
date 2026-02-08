@@ -1,4 +1,4 @@
 package com.ashutosh.restaurant_management.controller;
 
-public class CategoryController {
+public class AuthController {
 }
