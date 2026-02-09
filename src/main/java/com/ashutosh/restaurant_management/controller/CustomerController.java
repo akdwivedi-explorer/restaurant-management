@@ -1,6 +1,6 @@
 package com.ashutosh.restaurant_management.controller;
 
-import com.ashutosh.restaurant_management.GlobalApiResponse;
+import com.ashutosh.restaurant_management.global.ApiResponse;
 import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
 import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
 import com.ashutosh.restaurant_management.response.CustomerDetailResponse;
@@ -19,12 +19,12 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping("/customers")
-    public ResponseEntity<GlobalApiResponse<List<CustomerDetailResponse>>> getCustomers() {
+    public ResponseEntity<ApiResponse<List<CustomerDetailResponse>>> getCustomers() {
         List<CustomerDetailDto> customers = customerService.getAllCustomers();
         List<CustomerDetailResponse> response = customers.stream()
                 .map(CustomerDetailResponse::from)
                 .toList();
-        GlobalApiResponse<List<CustomerDetailResponse>> customerDetail = new GlobalApiResponse<>(
+        ApiResponse<List<CustomerDetailResponse>> customerDetail = new ApiResponse<>(
                 "Customer Details fetched successfully",
                 response);
 
@@ -32,12 +32,12 @@ public class CustomerController {
     }
 
     @GetMapping("/customer")
-    public ResponseEntity<GlobalApiResponse<CustomerDetailResponse>> getCustomer(
+    public ResponseEntity<ApiResponse<CustomerDetailResponse>> getCustomer(
             @RequestHeader("customerId") int customerId
     ){
         CustomerDetailDto customer = customerService.getCustomerById(customerId);
 
-        GlobalApiResponse<CustomerDetailResponse> response = new GlobalApiResponse<>(
+        ApiResponse<CustomerDetailResponse> response = new ApiResponse<>(
                 "Customer Detail fetched successfully by given customerId",
                 CustomerDetailResponse.from(customer));
 
@@ -45,11 +45,11 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/profile")
-    public ResponseEntity<GlobalApiResponse<CustomerProfileResponse>> getCustomerProfile(
+    public ResponseEntity<ApiResponse<CustomerProfileResponse>> getCustomerProfile(
             @RequestHeader("customerId") int customerId
     ){
         CustomerProfileDto customerProfile = customerService.getCustomerProfile(customerId);
-        GlobalApiResponse<CustomerProfileResponse> response = new GlobalApiResponse<>(
+        ApiResponse<CustomerProfileResponse> response = new ApiResponse<>(
                 "Customer profile fetched successfully",
                 CustomerProfileResponse.from(customerProfile));
 

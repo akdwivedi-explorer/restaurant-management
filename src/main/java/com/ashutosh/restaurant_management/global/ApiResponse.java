@@ -1,4 +1,4 @@
-package com.ashutosh.restaurant_management;
+package com.ashutosh.restaurant_management.global;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class GlobalApiResponse <T>{
+public class ApiResponse<T>{
     private String message;
     private T data;
 }
