@@ -5,9 +5,7 @@ import com.ashutosh.restaurant_management.response.CustomerDetailResponse;
 import com.ashutosh.restaurant_management.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,5 +25,13 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/customer")
+    public ResponseEntity<CustomerDetailResponse> getCustomer(
+            @RequestHeader("customerId") int customerId
+    ){
+        CustomerDto customer = customerService.getCustomerById(customerId);
+
+        return ResponseEntity.ok(CustomerDetailResponse.from(customer));
+    }
 
 }
