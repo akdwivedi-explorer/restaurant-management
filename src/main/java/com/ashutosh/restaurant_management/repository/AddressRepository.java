@@ -1,4 +1,12 @@
 package com.ashutosh.restaurant_management.repository;
 
-public class AddressRepository {
+import com.ashutosh.restaurant_management.model.Address;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface AddressRepository {
+    Optional<List<Address>> findByCustomerId(int customerId);
 }

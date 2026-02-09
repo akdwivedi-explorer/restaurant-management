@@ -1,8 +1,13 @@
 package com.ashutosh.restaurant_management.service.impl;
 
-import com.ashutosh.restaurant_management.dto.CustomerDto;
+import com.ashutosh.restaurant_management.dto.CustomerAddressDto;
+import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
+import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
+import com.ashutosh.restaurant_management.exception.AddressNotFoundException;
 import com.ashutosh.restaurant_management.exception.CustomerNotFoundException;
+import com.ashutosh.restaurant_management.model.Address;
 import com.ashutosh.restaurant_management.model.Customer;
+import com.ashutosh.restaurant_management.repository.AddressRepository;
 import com.ashutosh.restaurant_management.repository.CustomerRepository;
 import com.ashutosh.restaurant_management.service.CustomerService;
 import lombok.AllArgsConstructor;
@@ -14,13 +19,14 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
 
     @Override
-    public List<CustomerDto> getAllCustomers() {
+    public List<CustomerDetailDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
 
         return customers.stream()
-                .map(customer -> CustomerDto.builder()
+                .map(customer -> CustomerDetailDto.builder()
                         .id(customer.getId())
                         .firstName(customer.getFirstName())
                         .lastName(customer.getLastname())
@@ -37,10 +43,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDto getCustomerById(int customerId){
+    public CustomerDetailDto getCustomerById(int customerId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
 
-        return CustomerDto.builder()
+        return CustomerDetailDto.builder()
                 .id(customer.getId())
                 .firstName(customer.getFirstName())
                 .lastName(customer.getLastname())
@@ -51,6 +57,41 @@ public class CustomerServiceImpl implements CustomerService {
                 .isActive(customer.isActive())
                 .createdAt(String.valueOf(customer.getCreatedAt()))
                 .updatedAt(String.valueOf(customer.getUpdatedAt()))
+                .build();
+    }
+
+    @Override
+    public CustomerProfileDto getCustomerProfile(int customerId) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found for given customerId"));
+
+        List<Address> addresses = addressRepository.findByCustomerId(customerId).orElseThrow(() -> new AddressNotFoundException("Address not available for given customerId"));
+
+        return CustomerProfileDto.builder()
+                .customerDetail(CustomerDetailDto.builder()
+                        .id(customer.getId())
+                        .firstName(customer.getFirstName())
+                        .lastName(customer.getLastname())
+                        .email(customer.getEmail())
+                        .avatarUrl(customer.getAvatarUrl())
+                        .mobileNumber(customer.getMobileNumber())
+                        .roleType(customer.getRole())
+                        .isActive(customer.isActive())
+                        .updatedAt(String.valueOf(customer.getUpdatedAt()))
+                        .createdAt(String.valueOf(customer.getCreatedAt()))
+                        .build())
+                .customerAddress(addresses.stream().map(address -> CustomerAddressDto.builder()
+                        .id(address.getId())
+                        .customerId(address.getCustomerId())
+                        .cityName(address.getCityName())
+                        .streetName(address.getStreetName())
+                        .pincode(address.getPincode())
+                        .latitude(address.getLatitude())
+                        .longitude(address.getLongitude())
+                        .isDefault(address.isDefault())
+                        .createdAt(String.valueOf(address.getCreatedAt()))
+                        .updatedAt(String.valueOf(address.getUpdatedAt()))
+                        .build()
+                ).toList())
                 .build();
     }
 }
