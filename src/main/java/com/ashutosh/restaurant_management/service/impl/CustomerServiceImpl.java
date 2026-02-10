@@ -94,4 +94,23 @@ public class CustomerServiceImpl implements CustomerService {
                 ).toList())
                 .build();
     }
+
+    @Override
+    public List<CustomerAddressDto> getCustomerAddresses(int customerId){
+        List<Address> addresses = addressRepository.findByCustomerId(customerId).orElseThrow(() -> new AddressNotFoundException("Address not found for the given customerId"));
+
+        return addresses.stream().map(address -> CustomerAddressDto.builder()
+                .id(address.getId())
+                .customerId(address.getCustomerId())
+                .cityName(address.getCityName())
+                .streetName(address.getStreetName())
+                .pincode(address.getPincode())
+                .latitude(address.getLatitude())
+                .longitude(address.getLongitude())
+                .isDefault(address.isDefault())
+                .createdAt(String.valueOf(address.getCreatedAt()))
+                .updatedAt(String.valueOf(address.getUpdatedAt()))
+                .build()
+        ).toList();
+    }
 }

@@ -16,7 +16,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(customerIdValidatorInterceptor)
                 .addPathPatterns(
                         "/customer",
-                        "customer/profile"
+                        "customer/profile",
+                        "/customer/addresses"
                 );
     }
 }
