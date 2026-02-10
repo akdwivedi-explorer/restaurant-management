@@ -73,4 +73,20 @@ public class CustomerController {
         return ResponseEntity.ok(customerAddresses);
     }
 
+    @GetMapping("/customer/address")
+    public ResponseEntity<ApiResponse<CustomerAddressResponse>> getCustomerAddress(
+            @RequestHeader("customerId") int customerId,
+            @RequestHeader("addressId") int addressId
+    ){
+        CustomerAddressDto address = customerService.getCustomerAddress(customerId, addressId);
+        ApiResponse<CustomerAddressResponse> response = new ApiResponse<>(
+                "Customer Address fetched successfully for the given customerId and addressId",
+                CustomerAddressResponse.from(address)
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
 }

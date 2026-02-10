@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface AddressRepository {
     Optional<List<Address>> findByCustomerId(int customerId);
+
+    Optional<Address> findByCustomerIdAndId(int customerId, int addressId);
 }

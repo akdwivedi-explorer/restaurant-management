@@ -8,13 +8,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class CustomerIdValidatorInterceptor implements HandlerInterceptor  {
-
+public class AddressIdValidatorInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String customerId = request.getHeader("customerId");
-        if(!StringUtils.hasText(customerId)){
-            throw new BadRequestException("Customer Id cannot be null or empty");
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception{
+        String addressId = request.getHeader("addressId");
+        if(!StringUtils.hasText(addressId)){
+            throw new BadRequestException("Address Id cannot be null or empty.");
         }
         return true;
     }

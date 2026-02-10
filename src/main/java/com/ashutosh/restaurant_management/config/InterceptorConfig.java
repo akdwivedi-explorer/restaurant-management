@@ -1,5 +1,6 @@
 package com.ashutosh.restaurant_management.config;
 
+import com.ashutosh.restaurant_management.interceptor.AddressIdValidatorInterceptor;
 import com.ashutosh.restaurant_management.interceptor.CustomerIdValidatorInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
     private final CustomerIdValidatorInterceptor customerIdValidatorInterceptor;
+    private final AddressIdValidatorInterceptor addressIdValidatorInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -17,7 +19,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns(
                         "/customer",
                         "customer/profile",
-                        "/customer/addresses"
+                        "/customer/addresses",
+                        "/customer/address"
+                );
+        registry.addInterceptor(addressIdValidatorInterceptor)
+                .addPathPatterns(
+                        "/customer/address"
                 );
     }
 }

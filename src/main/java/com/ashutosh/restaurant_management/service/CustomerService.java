@@ -14,4 +14,6 @@ public interface CustomerService {
     CustomerProfileDto getCustomerProfile(int customerId);
 
     List<CustomerAddressDto> getCustomerAddresses(int customerId);
+
+    CustomerAddressDto getCustomerAddress(int customerId, int addressId);
 }
