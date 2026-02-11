@@ -4,11 +4,13 @@ import com.ashutosh.restaurant_management.dto.CustomerAddressDto;
 import com.ashutosh.restaurant_management.global.ApiResponse;
 import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
 import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
+import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
 import com.ashutosh.restaurant_management.response.CustomerAddressResponse;
 import com.ashutosh.restaurant_management.response.CustomerDetailResponse;
 import com.ashutosh.restaurant_management.response.CustomerProfileResponse;
 import com.ashutosh.restaurant_management.service.CustomerService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -85,6 +87,20 @@ public class CustomerController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/customers")
+    public ResponseEntity<ApiResponse<String>> createCustomer(
+            @RequestBody CreateCustomerRequest request) {
+
+        Integer id = customerService.createNewCustomer(request);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Customer created successfully with id: " + id,
+                "Success"
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 

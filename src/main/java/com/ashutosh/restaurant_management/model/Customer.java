@@ -4,11 +4,13 @@ import com.ashutosh.restaurant_management.enums.RoleType;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@Builder
 @Data
 @Entity
 @AllArgsConstructor
@@ -41,7 +43,7 @@ public class Customer {
     private RoleType role;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;

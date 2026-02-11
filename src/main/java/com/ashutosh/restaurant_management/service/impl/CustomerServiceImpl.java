@@ -9,6 +9,7 @@ import com.ashutosh.restaurant_management.model.Address;
 import com.ashutosh.restaurant_management.model.Customer;
 import com.ashutosh.restaurant_management.repository.AddressRepository;
 import com.ashutosh.restaurant_management.repository.CustomerRepository;
+import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
 import com.ashutosh.restaurant_management.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .mobileNumber(customer.getMobileNumber())
                         .avatarUrl(customer.getAvatarUrl())
                         .roleType(customer.getRole())
-                        .isActive(customer.isActive())
+                        .isActive(customer.getIsActive())
                         .createdAt(String.valueOf(customer.getCreatedAt()))
                         .updatedAt(String.valueOf(customer.getUpdatedAt()))
                         .build()
@@ -54,7 +55,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .mobileNumber(customer.getMobileNumber())
                 .avatarUrl(customer.getAvatarUrl())
                 .roleType(customer.getRole())
-                .isActive(customer.isActive())
+                .isActive(customer.getIsActive())
                 .createdAt(String.valueOf(customer.getCreatedAt()))
                 .updatedAt(String.valueOf(customer.getUpdatedAt()))
                 .build();
@@ -75,7 +76,7 @@ public class CustomerServiceImpl implements CustomerService {
                         .avatarUrl(customer.getAvatarUrl())
                         .mobileNumber(customer.getMobileNumber())
                         .roleType(customer.getRole())
-                        .isActive(customer.isActive())
+                        .isActive(customer.getIsActive())
                         .updatedAt(String.valueOf(customer.getUpdatedAt()))
                         .createdAt(String.valueOf(customer.getCreatedAt()))
                         .build())
@@ -130,5 +131,23 @@ public class CustomerServiceImpl implements CustomerService {
                 .createdAt(String.valueOf(address.getCreatedAt()))
                 .updatedAt(String.valueOf(address.getUpdatedAt()))
                 .build();
+    }
+
+    @Override
+    public Integer createNewCustomer(CreateCustomerRequest request) {
+
+        Customer customer = Customer.builder()
+                .firstName(request.getFirstName())
+                .lastname(request.getLastName())
+                .email(request.getEmail())
+                .mobileNumber(request.getMobileNumber())
+                .avatarUrl(request.getAvatarUrl())
+                .role(request.getRoleType())
+                .isActive(request.getIsActive())
+                .build();
+
+        customer = customerRepository.save(customer);
+
+        return customer.getId();
     }
 }
