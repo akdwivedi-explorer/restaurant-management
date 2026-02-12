@@ -4,6 +4,7 @@ import com.ashutosh.restaurant_management.dto.CustomerAddressDto;
 import com.ashutosh.restaurant_management.global.ApiResponse;
 import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
 import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
+import com.ashutosh.restaurant_management.request.CreateCustomerAddressRequest;
 import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
 import com.ashutosh.restaurant_management.request.UpdateCustomerRequest;
 import com.ashutosh.restaurant_management.response.CustomerAddressResponse;
@@ -22,6 +23,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class CustomerController {
     private final CustomerService customerService;
+    private static final String SUCCESS_MESSAGE = "SUCCESS";
 
     @GetMapping("/customers")
     public ResponseEntity<ApiResponse<List<CustomerDetailResponse>>> getCustomers() {
@@ -98,7 +100,7 @@ public class CustomerController {
 
         ApiResponse<String> response = new ApiResponse<>(
                 "Customer created successfully with id: " + id,
-                "Success"
+                SUCCESS_MESSAGE
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -113,7 +115,50 @@ public class CustomerController {
 
         ApiResponse<String> response = new ApiResponse<>(
                 "Customer updated successfully with id: " + id,
-                "Success"
+                SUCCESS_MESSAGE
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/customerId")
+    public ResponseEntity<ApiResponse<String>> deleteCustomer(
+            @RequestHeader("customerId") int customerId
+    ) {
+        Integer id = customerService.deleteCustomer(customerId);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Customer deleted successfully with id:" + id,
+                SUCCESS_MESSAGE
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/customer/deactivate")
+    public ResponseEntity<ApiResponse<String>> deactivateCustomer(
+            @RequestHeader("customerId") int customerId
+    ) {
+        Integer id = customerService.deactivateCustomer(customerId);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Customer with id" + id + "deactivated",
+                SUCCESS_MESSAGE
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/customer/address")
+    public ResponseEntity<ApiResponse<String>> createCustomerAddress(
+            @RequestHeader("customerId") int customerId,
+            @RequestBody CreateCustomerAddressRequest request
+    ) {
+        Integer id = customerService.createCustomerAddress(customerId, request);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Address created for the customer:" + customerId + "AddressId" + id,
+                SUCCESS_MESSAGE
         );
 
         return ResponseEntity.ok(response);

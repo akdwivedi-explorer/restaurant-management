@@ -9,6 +9,7 @@ import com.ashutosh.restaurant_management.model.Address;
 import com.ashutosh.restaurant_management.model.Customer;
 import com.ashutosh.restaurant_management.repository.AddressRepository;
 import com.ashutosh.restaurant_management.repository.CustomerRepository;
+import com.ashutosh.restaurant_management.request.CreateCustomerAddressRequest;
 import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
 import com.ashutosh.restaurant_management.request.UpdateCustomerRequest;
 import com.ashutosh.restaurant_management.service.CustomerService;
@@ -16,6 +17,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @AllArgsConstructor
@@ -47,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDetailDto getCustomerById(int customerId) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
 
         return CustomerDetailDto.builder()
                 .id(customer.getId())
@@ -65,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerProfileDto getCustomerProfile(int customerId) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found for given customerId"));
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
 
         List<Address> addresses = addressRepository.findByCustomerId(customerId).orElseThrow(() -> new AddressNotFoundException("Address not available for given customerId"));
 
@@ -156,7 +159,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Integer updateCustomer(int customerId, UpdateCustomerRequest request) {
 
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found for the given customerId."));
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
 
         if (StringUtils.hasText(request.getFirstName())) {
             customer.setFirstName(request.getFirstName());
@@ -189,5 +192,45 @@ public class CustomerServiceImpl implements CustomerService {
         customer = customerRepository.save(customer);
 
         return customer.getId();
+    }
+
+    @Override
+    public Integer deleteCustomer(int customerId) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+
+        customerRepository.delete(customer);
+
+        return customerId;
+    }
+
+    @Override
+    public Integer deactivateCustomer(int customerId) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+
+        customer.setIsActive(false);
+
+        customerRepository.save(customer);
+
+        return customer.getId();
+    }
+
+    @Override
+    public Integer createCustomerAddress(int customerId, CreateCustomerAddressRequest request) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+
+        Address address = Address.builder()
+                .customerId(customer.getId())
+                .cityName(request.getCityName())
+                .streetName(request.getStreetName())
+                .pincode(request.getPincode())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
+                .createdAt(Timestamp.from(Instant.now()))
+                .updatedAt(Timestamp.from(Instant.now()))
+                .build();
+
+        address = addressRepository.save(address);
+
+        return address.getId();
     }
 }
