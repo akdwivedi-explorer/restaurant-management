@@ -10,9 +10,11 @@ import com.ashutosh.restaurant_management.model.Customer;
 import com.ashutosh.restaurant_management.repository.AddressRepository;
 import com.ashutosh.restaurant_management.repository.CustomerRepository;
 import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
+import com.ashutosh.restaurant_management.request.UpdateCustomerRequest;
 import com.ashutosh.restaurant_management.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -97,7 +99,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerAddressDto> getCustomerAddresses(int customerId){
+    public List<CustomerAddressDto> getCustomerAddresses(int customerId) {
         List<Address> addresses = addressRepository.findByCustomerId(customerId).orElseThrow(() -> new AddressNotFoundException("Address not found for the given customerId"));
 
         return addresses.stream().map(address -> CustomerAddressDto.builder()
@@ -145,6 +147,44 @@ public class CustomerServiceImpl implements CustomerService {
                 .role(request.getRoleType())
                 .isActive(request.getIsActive())
                 .build();
+
+        customer = customerRepository.save(customer);
+
+        return customer.getId();
+    }
+
+    @Override
+    public Integer updateCustomer(int customerId, UpdateCustomerRequest request) {
+
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new CustomerNotFoundException("Customer not found for the given customerId."));
+
+        if (StringUtils.hasText(request.getFirstName())) {
+            customer.setFirstName(request.getFirstName());
+        }
+
+        if (StringUtils.hasText(request.getLastName())) {
+            customer.setLastname(request.getLastName());
+        }
+
+        if (StringUtils.hasText(request.getEmail())) {
+            customer.setEmail(request.getEmail());
+        }
+
+        if (StringUtils.hasText(request.getAvatarUrl())) {
+            customer.setAvatarUrl(request.getAvatarUrl());
+        }
+
+        if (StringUtils.hasText(request.getMobileNumber())) {
+            customer.setMobileNumber(request.getMobileNumber());
+        }
+
+        if (request.getRoleType() != null) {
+            customer.setRole(request.getRoleType());
+        }
+
+        if (request.getIsActive() != null) {
+            customer.setIsActive(request.getIsActive());
+        }
 
         customer = customerRepository.save(customer);
 

@@ -5,6 +5,7 @@ import com.ashutosh.restaurant_management.global.ApiResponse;
 import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
 import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
 import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
+import com.ashutosh.restaurant_management.request.UpdateCustomerRequest;
 import com.ashutosh.restaurant_management.response.CustomerAddressResponse;
 import com.ashutosh.restaurant_management.response.CustomerDetailResponse;
 import com.ashutosh.restaurant_management.response.CustomerProfileResponse;
@@ -38,7 +39,7 @@ public class CustomerController {
     @GetMapping("/customer")
     public ResponseEntity<ApiResponse<CustomerDetailResponse>> getCustomer(
             @RequestHeader("customerId") int customerId
-    ){
+    ) {
         CustomerDetailDto customer = customerService.getCustomerById(customerId);
 
         ApiResponse<CustomerDetailResponse> response = new ApiResponse<>(
@@ -51,7 +52,7 @@ public class CustomerController {
     @GetMapping("/customer/profile")
     public ResponseEntity<ApiResponse<CustomerProfileResponse>> getCustomerProfile(
             @RequestHeader("customerId") int customerId
-    ){
+    ) {
         CustomerProfileDto customerProfile = customerService.getCustomerProfile(customerId);
         ApiResponse<CustomerProfileResponse> response = new ApiResponse<>(
                 "Customer profile fetched successfully",
@@ -63,7 +64,7 @@ public class CustomerController {
     @GetMapping("/customer/addresses")
     public ResponseEntity<ApiResponse<List<CustomerAddressResponse>>> getCustomerAddresses(
             @RequestHeader("customerId") int customerId
-    ){
+    ) {
         List<CustomerAddressDto> addresses = customerService.getCustomerAddresses(customerId);
         List<CustomerAddressResponse> response = addresses.stream().map(CustomerAddressResponse::from)
                 .toList();
@@ -79,7 +80,7 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<CustomerAddressResponse>> getCustomerAddress(
             @RequestHeader("customerId") int customerId,
             @RequestHeader("addressId") int addressId
-    ){
+    ) {
         CustomerAddressDto address = customerService.getCustomerAddress(customerId, addressId);
         ApiResponse<CustomerAddressResponse> response = new ApiResponse<>(
                 "Customer Address fetched successfully for the given customerId and addressId",
@@ -103,6 +104,19 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PatchMapping("/customers")
+    public ResponseEntity<ApiResponse<String>> updateCustomer(
+            @RequestHeader("customerId") int customerId,
+            @RequestBody UpdateCustomerRequest request) {
 
+        Integer id = customerService.updateCustomer(customerId, request);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Customer updated successfully with id: " + id,
+                "Success"
+        );
+
+        return ResponseEntity.ok(response);
+    }
 
 }

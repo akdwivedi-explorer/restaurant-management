@@ -4,6 +4,8 @@ import com.ashutosh.restaurant_management.dto.CustomerAddressDto;
 import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
 import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
 import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
+import com.ashutosh.restaurant_management.request.UpdateCustomerRequest;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
@@ -19,4 +21,7 @@ public interface CustomerService {
     CustomerAddressDto getCustomerAddress(int customerId, int addressId);
 
     Integer createNewCustomer(CreateCustomerRequest request);
+
+    @Transactional
+    Integer updateCustomer(int customerId, UpdateCustomerRequest request);
 }
