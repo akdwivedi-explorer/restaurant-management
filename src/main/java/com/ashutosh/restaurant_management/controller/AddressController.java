@@ -43,4 +43,18 @@ public class AddressController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/address")
+    public ResponseEntity<ApiResponse<String>> deleteAddress(
+            @RequestHeader("addressId") int addressId
+    ){
+        Integer id = addressService.deleteAddress(addressId);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Address deleted successfully: " + id,
+                SUCCESS_MESSAGE
+        );
+
+        return ResponseEntity.ok(response);
+    }
 }
