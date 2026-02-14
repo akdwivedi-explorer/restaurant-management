@@ -50,4 +50,7 @@ public class Customer {
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    @JoinColumn(referencedColumnName = "id")
+    private Address address;
 }

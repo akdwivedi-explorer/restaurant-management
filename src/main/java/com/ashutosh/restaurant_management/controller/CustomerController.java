@@ -4,12 +4,15 @@ import com.ashutosh.restaurant_management.dto.CustomerAddressDto;
 import com.ashutosh.restaurant_management.global.ApiResponse;
 import com.ashutosh.restaurant_management.dto.CustomerDetailDto;
 import com.ashutosh.restaurant_management.dto.CustomerProfileDto;
+import com.ashutosh.restaurant_management.model.Customer;
 import com.ashutosh.restaurant_management.request.CreateCustomerAddressRequest;
 import com.ashutosh.restaurant_management.request.CreateCustomerRequest;
+import com.ashutosh.restaurant_management.request.UpdateCustomerAddressRequest;
 import com.ashutosh.restaurant_management.request.UpdateCustomerRequest;
 import com.ashutosh.restaurant_management.response.CustomerAddressResponse;
 import com.ashutosh.restaurant_management.response.CustomerDetailResponse;
 import com.ashutosh.restaurant_management.response.CustomerProfileResponse;
+import com.ashutosh.restaurant_management.service.AddressService;
 import com.ashutosh.restaurant_management.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class CustomerController {
     private final CustomerService customerService;
+    private final AddressService addressService;
     private static final String SUCCESS_MESSAGE = "SUCCESS";
 
     @GetMapping("/customers")
@@ -59,6 +63,24 @@ public class CustomerController {
         ApiResponse<CustomerProfileResponse> response = new ApiResponse<>(
                 "Customer profile fetched successfully",
                 CustomerProfileResponse.from(customerProfile));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/customer/profile")
+    public ResponseEntity<ApiResponse<String>> updateProfile(
+            @RequestHeader("customerId") int customerId,
+            @RequestBody UpdateCustomerRequest customerRequest,
+            @RequestBody UpdateCustomerAddressRequest addressRequest
+    ) {
+        CustomerDetailDto customerDetailDto = customerService.getCustomerById(customerId);
+        Integer id = customerService.updateCustomer(customerId, customerRequest);
+        Integer addId = addressService.updateAddress(customerDetailDto.getAddress().getId(), addressRequest);
+
+        ApiResponse<String> response = new ApiResponse<>(
+                "Customer profile updated successfully; customerId: " + id + "addressId: " + addId,
+                SUCCESS_MESSAGE
+        );
 
         return ResponseEntity.ok(response);
     }
