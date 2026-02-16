@@ -17,5 +17,4 @@ public class OrderDetailDto {
     private OrderStatus orderStatus;
     private double totalAmount;
     private PaymentStatus paymentStatus;
-
 }
